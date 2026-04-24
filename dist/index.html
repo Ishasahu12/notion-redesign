@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notion Productivity Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fafafa;
+      color: #1a1a2e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background-color: #ffffff;
+      border-right: 1px solid #e5e7eb;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 0 12px;
+      margin-bottom: 32px;
+    }
+
+    .sidebar-logo span {
+      font-size: 24px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background-color: #f3f4f6;
+    }
+
+    .nav-item.active {
+      background-color: #f3f4f6;
+      color: #1a1a2e;
+    }
+
+    .nav-item span {
+      font-size: 18px;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background-color: #e5e7eb;
+      margin: 24px 0;
+    }
+
+    .workspace-section {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .workspace-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-name {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    /* HERO SECTION */
+    .hero-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 64px 48px 48px;
+    }
+
+    .greeting {
+      font-size: 32px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .date {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+
+    .primary-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #3b82f6;
+      color: white;
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.15s ease;
+    }
+
+    .primary-cta:hover {
+      background-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .hero-subtitle {
+      margin-top: 16px;
+      font-size: 15px;
+      color: #6b7280;
+    }
+
+    /* SECTION STYLES */
+    .content-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 48px 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .view-all-link {
+      font-size: 13px;
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .view-all-link:hover {
+      color: #2563eb;
+    }
+
+    /* TEMPLATE CARDS */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .template-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .template-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .template-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .template-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    /* RECENT PAGES */
+    .recent-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .recent-card {
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .recent-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .recent-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .recent-meta {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      background-color: #ffffff;
+      border: 1px dashed #d1d5db;
+      border-radius: 12px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .empty-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #3b82f6;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .empty-cta:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span>≡</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <span>🏠</span> Home
+        </a>
+        <a href="#" class="nav-item">
+          <span>⭐</span> Favorites
+        </a>
+        <a href="#" class="nav-item">
+          <span>◷</span> Recently
+        </a>
+        <a href="#" class="nav-item">
+          <span>📁</span> Pages
+        </a>
+      </nav>
+      <div class="workspace-section">
+        <div class="workspace-user">
+          <div class="user-avatar">S</div>
+          <span class="user-name">Sarah Chen</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- HERO SECTION -->
+      <section class="hero-section">
+        <h1 class="greeting">Good morning, Sarah</h1>
+        <p class="date">April 24, 2026</p>
+
+        <button class="primary-cta">
+          ✏️ Start Writing
+        </button>
+        <p class="hero-subtitle">Begin a new page or continue where you left off</p>
+      </section>
+
+      <!-- QUICK START TEMPLATES -->
+      <section class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">Quick Start</h2>
+          <a href="#" class="view-all-link">View all templates →</a>
+        </div>
+        <div class="template-grid">
+          <div class="template-card">
+            <div class="template-icon">📋</div>
+            <p class="template-name">Meeting Notes</p>
+          </div>
+          <div class="template-card">
+            <div class="template-icon">📓</div>
+            <p class="template-name">Daily Journal</p>
+          </div>
+          <div class="template-card">
+            <div class="template-icon">✅</div>
+            <p class="template-name">Task List</p>
+          </div>
+          <div class="template-card">
+            <div class="template-icon">💡</div>
+            <p class="template-name">Brain Dump</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RECENT PAGES -->
+      <section class="content-section">
+        <div class="section-header">
+          <h2 class="section-title">Continue Work</h2>
+        </div>
+        <div class="recent-grid">
+          <div class="recent-card">
+            <p class="recent-title">Project Ideas</p>
+            <p class="recent-meta">Edited 2h ago</p>
+          </div>
+          <div class="recent-card">
+            <p class="recent-title">Weekly Plan</p>
+            <p class="recent-meta">Edited yesterday</p>
+          </div>
+          <div class="recent-card">
+            <p class="recent-title">Reading List</p>
+            <p class="recent-meta">Edited 3 days ago</p>
+          </div>
+          <div class="recent-card">
+            <p class="recent-title">Client Notes</p>
+            <p class="recent-meta">Edited last week</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- EMPTY STATE (uncomment to see it) -->
+      <!--
+      <section class="content-section">
+        <div class="empty-state">
+          <div class="empty-icon">📝</div>
+          <h3 class="empty-title">Your workspace is ready</h3>
+          <p class="empty-text">Start with a blank page or choose a template below</p>
+          <button class="empty-cta">Create your first page</button>
+        </div>
+      </section>
+      -->
+    </main>
+  </div>
+</body>
+</html>
